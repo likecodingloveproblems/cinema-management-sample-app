@@ -1,0 +1,52 @@
+{% extends "plan_base.html" %}
+{%load static%}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>{{ title }}</h1>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="accordion" id="accordionRoom">
+    {% for room in rooms %}
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="heading{{room.id}}">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{room.id}}" aria-expanded="true" aria-controls="collapse{{room.id}}">  
+              <a href="{% url 'schedules' room.id %}">
+                {{ room.name }}
+              </a>
+            </button>
+          </h2>
+          <div id="collapse{{room.id}}" {% if forloop.first %} class="accordion-collapse collapse show" {%else%} class="accordion-collapse collapse" {%endif%} aria-labelledby="heading{{room.id}}" data-bs-parent="#accordionRoom">
+            <div class="accordion-body">
+              <div class="accordion-inner">
+                <div class="container">
+                  <div class="row">
+                    {% for schedule in room.schedule_set.all%}
+                    <div class="col-md-4 col-sm-6 mb-3">
+                      <div class="card" style="width: 18rem;">
+                        <img src="{{schedule.movie.poster.url}}" class="card-img-top" alt="{{schedule.movie.title}}">
+                        <div class="card-body">
+                          <h5 class="card-title">{{schedule.movie.title}}</h5>
+                          <span class="fs-6 fw-lighter">{{schedule.date_time}}</span>
+                          <p class="card-text">we have some movie discription here ...</p>
+                          <a href="{% url 'seat' schedule.id %}" class="btn btn-primary">Choose your seat</a>
+                        </div>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

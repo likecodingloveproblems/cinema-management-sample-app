@@ -1,0 +1,15 @@
+{% extends "plan_base.html" %}
+
+{% block title %}{{ room.name }}{% endblock %}
+
+{% block content %}
+<h1>{{ room.name }}</h1>
+
+{% for schedule in schedules%}
+<h2>
+  <a href="{% url 'seat' schedule.id %}">
+    {{ schedule.movie.title|upper }}, {{ schedule.date_time}}
+  </a>
+</h2>
+{% endfor %}
+{% endblock %}
