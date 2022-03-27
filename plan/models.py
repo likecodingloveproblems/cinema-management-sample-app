@@ -1,9 +1,8 @@
 from django.db import models
-from django.forms import IntegerField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
-
+from django.core.validators import MinValueValidator
 '''
 This app is only for a specific customer and does not design as
     Software as a Service. if the commercial team want to sell it 
@@ -37,12 +36,17 @@ class Room(models.Model):
 
 class Movie(models.Model):
  
+    # It seemed movies often have unique title. 
+    # also if it's not correct we must create a unique barcode field for customers.
     title = models.CharField(_("name"), max_length=127, unique=True)
     poster = models.ImageField(_("poster"), upload_to='movie', height_field=None, width_field=None, max_length=None)
 
     class Meta:
         verbose_name = _("Movie")
         verbose_name_plural = _("Movies")
+        constraints = [
+            models.UniqueConstraint(fields=['title', 'poster'], name='unique_title'), # this will enforce new poster for each movie
+        ]
 
     def __str__(self):
         return self.title
@@ -51,8 +55,8 @@ class Schedule(models.Model):
 
     room = models.ForeignKey("plan.Room", verbose_name=_("room"), on_delete=models.CASCADE)
     movie = models.ForeignKey("plan.Movie", verbose_name=_("movie"), on_delete=models.CASCADE)
-    date_time = models.DateTimeField(_("movie date time"), auto_now=False, auto_now_add=False,
-        validators=[])
+    # It's not rational to schedule for past.
+    date_time = models.DateTimeField(_("movie date time"), auto_now=False, auto_now_add=False)
 
     class Meta:
         verbose_name = _("Schedule")
@@ -78,7 +82,7 @@ class Seat(models.Model):
     # that operation team want to change seat_id for it's internal management reasons it can 
     # make issues in tickets, because customer don't take attention to id, take attention to 
     # position of seat
-    seat_id = models.IntegerField(_("seat_id"), unique= True)
+    seat_id = models.IntegerField(_("seat_id"))
     # we assume rooms are rectangular, for other shapes we must have other options
     row = models.IntegerField(_("row"))
     column = models.IntegerField(_("column"))
@@ -89,6 +93,7 @@ class Seat(models.Model):
         verbose_name_plural = _("Seats")
         constraints = [
             models.UniqueConstraint(fields=['room', 'row', 'column'], name='unique_room_row_column'),
+            models.UniqueConstraint(fields=['room', 'seat_id'], name='unique_room_seat_id'),
         ]
 
     def __str__(self):
