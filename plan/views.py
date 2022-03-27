@@ -10,7 +10,7 @@ from plan.models import Room, Movie, Schedule, Seat, Ticket
 class RoomView(views.View):
     template_name = 'rooms.html'
     def get(self, request):
-        rooms = Room.objects.all()
+        rooms = Room.objects.get_all_store_with_schedules()
         context = {
             'title': 'Rooms',
             'rooms': rooms

@@ -17,6 +17,14 @@ Assumptions:
     he/she can buy only one seat for each ticket?
 '''
 
+class RoomManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset()
+
+    def get_all_store_with_schedules(self):
+        return self.get_queryset().prefetch_related('schedule_set')
+
+
 class Room(models.Model):
 
     name = models.CharField(_("name"), unique=True, max_length=127)
@@ -26,6 +34,7 @@ class Room(models.Model):
         related_name="rooms",
         through="plan.Schedule",
         )
+    objects = RoomManager()
 
     class Meta:
         verbose_name = _("Room")
