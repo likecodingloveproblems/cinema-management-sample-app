@@ -17,12 +17,11 @@ from django.contrib import admin
 from django.urls import path, include
 from cinema import settings
 from django.conf.urls.static import static
-from plan.views import Room
 
 urlpatterns = [
     path('', include('plan.urls')),
     path('admin/', admin.site.urls),
-    # path(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'admin/login.html'}),
+    path('accounts/', include('my_auth.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
 ]
 if settings.DEBUG:

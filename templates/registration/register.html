@@ -2,7 +2,7 @@
 {% comment %} {% extends "admin/base_site.html" %} {% endcomment %}
 {% load i18n static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static "admin/css/login.css" %}">
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static "registration/css/register.css" %}">
 {{ form.media }}
 {% endblock %}
 
@@ -50,8 +50,17 @@
     {{ form.username.label_tag }} {{ form.username }}
   </div>
   <div class="form-row">
+    {{ form.email.errors }}
+    {{ form.email.label_tag }} {{ form.email }}
+  </div>
+  <div class="form-row">
     {{ form.password.errors }}
     {{ form.password.label_tag }} {{ form.password }}
+    <input type="hidden" name="next" value="{{ next }}">
+  </div>
+  <div class="form-row">
+    {{ form.confirm_password.errors }}
+    {{ form.confirm_password.label_tag }} {{ form.confirm_password }}
     <input type="hidden" name="next" value="{{ next }}">
   </div>
   {% url 'admin_password_reset' as password_reset_url %}
@@ -61,7 +70,7 @@
   </div>
   {% endif %}
   <div class="submit-row">
-    <input type="submit" value="{% translate 'Log in' %}">
+    <input type="submit" value="{% translate 'Sign up' %}">
   </div>
 </form>
 
