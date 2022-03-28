@@ -1,8 +1,6 @@
 from django.db import models
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator
 '''
 This app is only for a specific customer and does not design as
     Software as a Service. if the commercial team want to sell it 
@@ -83,6 +81,19 @@ class SeatManager(models.Manager):
 
     def get_room_seats(self, room):
         return self.get_queryset().filter(room=room)
+
+    def get_room_unavailable_seats(self, room, schedule):
+        tickets = Ticket.objects.filter(schedule = schedule)
+        unavailable_seats = Seat.objects.\
+            get_room_seats(room).\
+                filter(id__in = tickets.values('seat'))
+        return unavailable_seats
+
+    def get_room_available_seats(self, room, schedule):
+        seats = Seat.objects.get_room_seats(room)
+        unavailable_seats = Seat.objects.get_room_unavailable_seats(room, schedule)
+        available_seats = seats.exclude(id__in=unavailable_seats.values('id'))
+        return available_seats
 
 class Seat(models.Model):
 

@@ -37,13 +37,16 @@ class SeatView(views.View):
         schedule = get_object_or_404(Schedule, pk=schedule_id)
         movie = get_object_or_404(Movie, pk=schedule.movie.id)
         room = get_object_or_404(Room, pk=schedule.room.id)
-        seats = Seat.objects.get_room_seats(room=room)
+        available_seats = Seat.objects.get_room_available_seats(room=room, schedule=schedule)
+        unavailable_seats = Seat.objects.get_room_unavailable_seats(room=room, schedule=schedule)
+
         context = {
             'schedule': schedule,
             'room': room,
             'movie': movie,
             'date_time': schedule.date_time,
-            'seats': seats
+            'available_seats': available_seats,
+            'unavailable_seats': unavailable_seats,
         }
         return context
     

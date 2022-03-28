@@ -27,24 +27,33 @@
             <tbody>
               <form method='POST'>
               {% csrf_token %}
-              {% for seat in seats %}
-                <tr>
-                    <td>{{ seat.seat_id }}</td>
-                    <td>{{ seat.row }}</td>
-                    <td>{{ seat.column }}</td>
-                    <td>
-                      {% if not seat.ticket.exists %}
+                {% for seat in available_seats %}
+                  <tr>
+                      <td>{{ seat.seat_id }}</td>
+                      <td>{{ seat.row }}</td>
+                      <td>{{ seat.column }}</td>
+                      <td>
                         <span class="badge bg-success">Available</span>
-                      {% else %}
-                        <span class="badge bg-danger">Purchased</span>
-                      {% endif %}
-                    <td>
-                      <button type="submit" value="{{seat.id}}" name="seat_id" class="btn btn-primary"
-                      {% if seat.ticket.exists %} disabled {%endif%}>
-                        Buy
-                      </button>
-                    </td>
-                </tr>
+                      <td>
+                        <button type="submit" value="{{seat.id}}" name="seat_id" class="btn btn-primary">
+                          Buy
+                        </button>
+                      </td>
+                  </tr>
+                {% endfor %}
+                {% for seat in unavailable_seats %}
+                  <tr>
+                      <td>{{ seat.seat_id }}</td>
+                      <td>{{ seat.row }}</td>
+                      <td>{{ seat.column }}</td>
+                      <td>
+                          <span class="badge bg-danger">Purchased</span>
+                      <td>
+                        <button type="submit" value="{{seat.id}}" name="seat_id" class="btn btn-primary" disabled>
+                          Purchased
+                        </button>
+                      </td>
+                  </tr>
                 {% endfor %}
               </form>
             </tbody>
