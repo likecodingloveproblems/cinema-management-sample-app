@@ -1,11 +1,18 @@
 from django import forms
 from django.contrib.auth.models import User
 
+
 class RegisterForm(forms.Form):
-    username = forms.CharField(label='Username', max_length=30, widget=forms.TextInput(attrs={"autofocus": True}))
+    username = forms.CharField(
+        label='Username',
+        max_length=30,
+        widget=forms.TextInput(
+            attrs={
+                "autofocus": True}))
     email = forms.EmailField(label='email', widget=forms.EmailInput)
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
-    confirm_password = forms.CharField(label='Confirm', widget=forms.PasswordInput)
+    confirm_password = forms.CharField(
+        label='Confirm', widget=forms.PasswordInput)
 
     def clean_username(self):
         username = self.cleaned_data.get('username')

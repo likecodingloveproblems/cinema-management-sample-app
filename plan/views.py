@@ -1,8 +1,9 @@
 from django import views
 from django.http import HttpResponseBadRequest
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.urls import reverse
 
 from plan.models import Room, Movie, Schedule, Seat, Ticket
 # Create your views here.
@@ -70,6 +71,7 @@ class SeatView(views.View):
         # it's better to validate it in forms or model not in view
         if Ticket.objects.filter(seat=seat, schedule_id=context['schedule']):
             return HttpResponseBadRequest(
-                'some thing went wrong, it seems client edited html :(')
+                '''some thing went wrong, it seems client edited html :(
+                    this ticket is already booked''')
         Ticket.objects.purchase(request.user, context['schedule'], seat)
-        return render(request, self.template_name, context)
+        return redirect(reverse('seat', args=(context['schedule'].id,)))
