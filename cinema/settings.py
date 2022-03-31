@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-t+-t8di6ecl47v&nrdvlcf5-6m7ye3a)x%*07=5xex%ewd39^&'
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# I set DEBUG as environment variable
+# to simply switch in dev and prod environments.
+DEBUG = os.environ.get('DJANGO_DEBUG', False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(' ')
 
 
 # Application definition
@@ -118,6 +121,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    'static',
+]
+STATIC_ROOT = 'staticfiles/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -127,13 +134,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # set media
 MEDIA_ROOT = './media'
 MEDIA_URL = '/media/'
-
-# static files
-STATIC_URL = 'static/'
-STATICFILES_DIRS =[
-    'static',
-]
-STATIC_ROOT = 'staticfiles/'
 
 # authentication urls
 LOGIN_URL = '/accounts/login/'
